@@ -16,7 +16,6 @@ Database: SQLite (SQLAlchemy ORM)
 
 AI: OpenAI API / Groq
 
-
 The platform generates charts to visualize a student's profile, tracks learning consistency, and monitor performance over time with different charts
 
 
