@@ -1,4 +1,5 @@
 Part 3
+
 A Flask-based AI platform that tracks student performance across Intuition, Memory, and Application dimensions and provides personalized feedback based on the user assessment data from part2.
 The platform analyses users performance and gives scores for all topics 
 It uses Uses LLMs (OpenAI/Groq) to generate personalized AI feedback for users based on their performance in that topics.
