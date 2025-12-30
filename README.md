@@ -37,6 +37,25 @@ Upload documents and explore the knowledge graphs
 4. Visualize: View interactive knowledge graphs with different layouts
 5. Explore: Click nodes to see concept details and relationships
 
+##Part 2
+
+This part is a Retrieval-Augmented Generation (RAG) system built using Python, LangChain, MongoDB, and ChromaDB. Users can store extracted text in a database, convert the content into vector embeddings, and ask natural-language questions to get context-aware answers with source references. The db folder sets up the mongoclient that is further used to access the database and the rag folder implements rag after reading the text from the database. It gives you the output. The ingest folder sets up the vector database. 
+
+PDF ingestion & storage using MongoDB
+
+Text chunking & embeddings with OpenAI embeddings
+
+Vector search using ChromaDB
+
+Question answering through LangChain’s Runnable-based RAG pipeline
+
+
+Steps to run the application-
+1. Run pip install -r requirements.txt
+2. Run python main.py
+3. Enter your question or exit
+
+
 
 
 
