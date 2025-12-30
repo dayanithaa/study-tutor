@@ -17,34 +17,19 @@ Graph Visualization: Cytoscape.js
 PDF Processing: PyMuPDF, pdfplumber
 Authentication: JWT with bcrypt password hashing
 
--Quick Start
+- Quick Start
 
-1. Install Dependencies
-   ```bash
-   pip install -r requirements.txt
-   ```
-
+1. pip install -r requirements.txt
 2. Start MongoDB
-   ```bash
-   # Make sure MongoDB is running on localhost:27017
-   ```
-
-3. **Run the Application**
-   ```bash
-   python app.py
-   ```
-   Or use the provided batch file:
-   ```bash
+3.  python app.py
+   Or 
    start_and_open.bat
-   ```
-
-
 Open http://localhost:8000 in your browser
 Create an account or sign in
 Upload documents and explore the knowledge graphs
 
 
--Usage
+- Usage
 
 1. Sign Up: Create a new account with email and password
 2. Upload: Drop PDF or PowerPoint files into the upload area
@@ -55,7 +40,7 @@ Upload documents and explore the knowledge graphs
 
 
 
-##Part 3
+## Part 3
 
 A Flask-based AI platform that tracks student performance across Intuition, Memory, and Application dimensions and provides personalized feedback based on the user assessment data from part2.
 The platform analyses users performance and gives scores for all topics 
