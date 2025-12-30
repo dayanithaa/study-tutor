@@ -10,12 +10,14 @@ def ingest_pipeline():
 
 def ask_question(query):
     qa_chain = load_qa_chain()
-    result = qa_chain({"query": query})
+    result = qa_chain.invoke(query)
 
-    print("Answer:\n", result["result"])
-    print("\nSources:")
-    for doc in result["source_documents"]:
-        print(doc.metadata)
+    print(result)
+
+   # print("Answer:\n", result)
+   # print("\nSources:")
+   # for doc in result:
+   #     print(doc.metadata)
 
 if __name__ == "__main__":
     ingest_pipeline()

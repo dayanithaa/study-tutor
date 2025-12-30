@@ -8,7 +8,7 @@ from config import CHROMA_DIR
 
 
 def load_qa_chain():
-    llm = ChatOpenAI(model="o4-mini", temperature=0)
+    llm = ChatOpenAI(model="o4-mini")
 
     embeddings = OpenAIEmbeddings()
 
