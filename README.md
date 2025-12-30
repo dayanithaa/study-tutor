@@ -69,10 +69,12 @@ Process to run the Application
 
 4 Configure Environment: Create .env file with keys.
 
-## FUTURE IMPROVEMENTS:
-Integration
 5 Initialize Database: python init_db.py ( to get the user data )
 
 6 Run Application: python app.py
+
+## FUTURE IMPROVEMENTS:
+Integration
+
 
 7 Open Browser: http://localhost:5000
