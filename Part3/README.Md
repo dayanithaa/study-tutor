@@ -9,9 +9,13 @@ It also generates actions to be taken with priority
 
 Tech Stack used
 Backend: Python 3, Flask, SQLAlchemy 
+
 Frontend: HTML5, CSS3, JavaScript, Chart.js
+
 Database: SQLite (SQLAlchemy ORM)
+
 AI: OpenAI API / Groq
+
 
 The platform generates charts to visualize a student's profile, tracks learning consistency, and monitor performance over time with different charts
 
