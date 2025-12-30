@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Analytics Platform</title>
+    <link rel="stylesheet" href="theme.css">
+    <meta name="version" content="v4">
+</head>
+<body>
+    <!-- App Layout with Sidebar -->
+    <div class="app-layout">
+        <!-- Left Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="sidebar-title">Learning Analytics</h1>
+            </div>
+            <nav>
+                <ul class="sidebar-nav">
+                    <li class="sidebar-nav-item">
+                        <a href="#" class="sidebar-nav-link active" data-page="main-dashboard">
+                            <span class="sidebar-nav-icon"></span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="#" class="sidebar-nav-link" data-page="topic-selection">
+                            <span class="sidebar-nav-icon"></span>
+                            <span>Topics</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Main Dashboard Page -->
+            <main id="main-dashboard" class="page active">
+                <div class="container">
+                    <!-- Welcome Header with User Selection -->
+                    <header class="page-header-simple">
+                        <div class="user-selection">
+                            <h1 class="page-title">Welcome back, <span id="user-name">Loading...</span>!</h1>
+                            <div class="user-selector">
+                                <label for="user-input">User ID or Name:</label>
+                                <input 
+                                    type="text" 
+                                    id="user-input" 
+                                    placeholder="e.g., user_001 or Alex Johnson"
+                                    onkeypress="if(event.key==='Enter') loadUserByInput()"
+                                />
+                                <button onclick="loadUserByInput()" class="load-user-btn">Load</button>
+                            </div>
+                            <div id="user-error" class="user-error" style="display: none;"></div>
+                        </div>
+                        <p class="page-subtitle">Track your knowledge, identify gaps, and master concepts effectively</p>
+                    </header>
+
+                    <!-- Stats Overview Cards -->
+                    <section class="stats-overview">
+                        <div class="stat-overview-card concepts">
+                            <div class="stat-overview-header">
+                                <div class="stat-overview-icon">📚</div>
+                                <div class="stat-overview-label">Concepts Mastered</div>
+                            </div>
+                            <div class="stat-overview-value" id="total-topics">-</div>
+                            <div class="stat-overview-subtitle">of <span id="total-concepts">-</span> total concepts</div>
+                        </div>
+                        
+                        <div class="stat-overview-card streak">
+                            <div class="stat-overview-header">
+                                <div class="stat-overview-icon">🔥</div>
+                                <div class="stat-overview-label">Learning Streak</div>
+                            </div>
+                            <div class="stat-overview-value" id="learning-streak">-</div>
+                            <div class="stat-overview-subtitle">Keep it up!</div>
+                        </div>
+                        
+                        <div class="stat-overview-card score">
+                            <div class="stat-overview-header">
+                                <div class="stat-overview-icon">📊</div>
+                                <div class="stat-overview-label">Average Score</div>
+                            </div>
+                            <div class="stat-overview-value" id="overall-progress">-%</div>
+                            <div class="stat-overview-subtitle">Across all aspects</div>
+                        </div>
+                        
+                        <div class="stat-overview-card gaps">
+                            <div class="stat-overview-header">
+                                <div class="stat-overview-icon"></div>
+                                <div class="stat-overview-label">Gaps Detected</div>
+                            </div>
+                            <div class="stat-overview-value" id="gaps-detected">-</div>
+                            <div class="stat-overview-subtitle">Needs attention</div>
+                        </div>
+                    </section>
+
+                    <!-- User History Section - Main Content -->
+                    <section class="user-history-section">
+                        <h2 class="section-title">Your Learning History</h2>
+                        
+                        <!-- Topics Grid with History -->
+                        <div class="topics-history-grid" id="main-topics-container">
+                            <!-- Topics will be populated by JavaScript -->
+                        </div>
+                    </section>
+
+                    <!-- Action Items Section -->
+                    <section class="action-items-main-section">
+                        <h2 class="section-title">Action Items</h2>
+                        <div class="main-action-items-container" id="main-action-items-container">
+                            <!-- Action items will be populated by JavaScript -->
+                            <div class="action-item-placeholder">
+                                <div class="action-item-icon"></div>
+                                <div class="action-item-content">
+                                    <div class="action-item-title">Loading action items...</div>
+                                    <div class="action-item-subtitle">Analyzing your learning progress</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Recent Activity Section -->
+                    <section class="recent-activity-section">
+                        <h2 class="section-title"> Recent Activity</h2>
+                        <div class="activity-timeline" id="recent-activity-timeline">
+                            <!-- Recent activity will be populated by JavaScript -->
+                        </div>
+                    </section>
+                </div>
+            </main>
+
+            <!-- Topic Selection Page -->
+            <main id="topic-selection" class="page">
+                <div class="container">
+                    <header class="page-header">
+                        <div class="navigation-breadcrumb">
+                            <button id="back-to-main" class="back-button" title="Return to main dashboard">
+                                <span class="back-icon">←</span>
+                                <span>Back to Dashboard</span>
+                            </button>
+                            <div class="breadcrumb-path">
+                                <span class="breadcrumb-item">Dashboard</span>
+                                <span class="breadcrumb-separator">→</span>
+                                <span class="breadcrumb-item current">Topic Selection</span>
+                            </div>
+                        </div>
+                        <h1 class="neon-text">Topic Selection</h1>
+                        <p class="subtitle">Choose a topic to analyze</p>
+                    </header>
+
+                    <!-- Overall Analytics Section -->
+                    <section id="overall-analytics" class="analytics-section">
+                        <h2 class="section-title">Overall Performance</h2>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card intuition">
+                                <h3>Intuition</h3>
+                                <div class="stat-value" id="overall-intuition">-%</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="overall-intuition-progress"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card memory">
+                                <h3>Memory</h3>
+                                <div class="stat-value" id="overall-memory">-%</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="overall-memory-progress"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card application">
+                                <h3>Application</h3>
+                                <div class="stat-value" id="overall-application">-%</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="overall-application-progress"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card total">
+                                <h3>Total Assessments</h3>
+                                <div class="stat-value" id="total-assessments">-</div>
+                            </div>
+                        </div>
+
+                        <div class="charts-section">
+                            <div class="chart-card">
+                                <h3>Daily Question Counts</h3>
+                                <div class="chart-container">
+                                    <canvas id="daily-questions-chart"></canvas>
+                                </div>
+                            </div>
+                            
+                            <div class="chart-card">
+                                <h3>Improvement Trends</h3>
+                                <div class="chart-container">
+                                    <canvas id="improvement-trends-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Topic List Section -->
+                    <section id="topic-list" class="topic-list-section">
+                        <h2 class="section-title">Available Topics</h2>
+                        <p class="section-description">Select a topic to explore detailed subtopic analytics</p>
+                        <div id="topics-container" class="topics-grid">
+                            <!-- Topics will be populated by JavaScript -->
+                        </div>
+                    </section>
+                </div>
+            </main>
+
+            <!-- Subtopic Analytics Page -->
+            <main id="subtopic-analytics" class="page">
+                <div class="container">
+                    <header class="page-header">
+                        <button id="back-to-topics" class="back-button">
+                            <span class="back-icon">←</span>
+                            <span>Back to Topics</span>
+                        </button>
+                        <h1 class="neon-text" id="subtopic-title">Subtopic Analytics</h1>
+                        <p class="subtitle" id="subtopic-description">Detailed analysis for selected subtopic</p>
+                    </header>
+
+                    <!-- Dimensions Performance Section -->
+                    <section id="dimensions-section" class="analytics-section">
+                        <h2 class="section-title">Dimensions Performance</h2>
+                        <div class="dimensions-grid">
+                            <div class="dimension-card intuition">
+                                <h3>Intuition</h3>
+                                <div class="dimension-score" id="subtopic-intuition">-%</div>
+                                <div class="dimension-description">Conceptual Understanding</div>
+                            </div>
+                            
+                            <div class="dimension-card memory">
+                                <h3>Memory</h3>
+                                <div class="dimension-score" id="subtopic-memory">-%</div>
+                                <div class="dimension-description">Knowledge Retention</div>
+                            </div>
+                            
+                            <div class="dimension-card application">
+                                <h3>Application</h3>
+                                <div class="dimension-score" id="subtopic-application">-%</div>
+                                <div class="dimension-description">Problem Solving</div>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <h3>Comparative Performance</h3>
+                            <div class="chart-container">
+                                <canvas id="dimensions-chart"></canvas>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Accuracy Trends Section -->
+                    <section id="accuracy-section" class="analytics-section">
+                        <h2 class="section-title">Accuracy Trends</h2>
+                        <div class="chart-card">
+                            <div class="chart-container">
+                                <canvas id="accuracy-chart"></canvas>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Improvement Progress Section -->
+                    <section id="improvement-section" class="analytics-section">
+                        <h2 class="section-title">Improvement Progress</h2>
+                        <div class="chart-card">
+                            <div class="chart-container">
+                                <canvas id="improvement-chart"></canvas>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- AI Feedback Section -->
+                    <section id="ai-feedback-section" class="analytics-section">
+                        <h2 class="section-title">AI Feedback</h2>
+                        <div class="ai-feedback-container">
+                            <div class="feedback-summary" id="subtopic-feedback-summary">
+                                <h4>AI Analysis</h4>
+                                <p>Based on your performance, you're showing good progress with solid problem-solving skills in this area.</p>
+                            </div>
+                            
+                            <div class="action-items-section">
+                                <h3>Action Items</h3>
+                                <div id="subtopic-action-items">
+                                    <div class="action-item">Complete practice exercises</div>
+                                    <div class="action-item">Review previous assessments</div>
+                                    <div class="action-item">Take notes on key concepts</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <!-- Application JavaScript -->
+    <script>
+        // Global variables
+        let charts = {};
+        let currentTopicData = null;
+        let currentUserId = null; // Will be set after fetching users
+        let currentSubtopic = null; // Track current subtopic for AI feedback
+        let allUsers = []; // Store all users from database
+        
+        // Load user by input (ID or name)
+        async function loadUserByInput() {
+            const userInput = document.getElementById('user-input').value.trim();
+            const errorDiv = document.getElementById('user-error');
+            const loadBtn = document.querySelector('.load-user-btn');
+            
+            if (!userInput) {
+                errorDiv.textContent = 'Please enter a user ID or name';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            errorDiv.style.display = 'none';
+            if (loadBtn) {
+                loadBtn.disabled = true;
+                loadBtn.textContent = 'Loading...';
+            }
+            
+            console.log(`🔍 Looking up user: ${userInput}`);
+            
+            try {
+                const response = await fetch('/api/users/find', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ query: userInput })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.user) {
+                    currentUserId = data.user.id;
+                    console.log(`✅ User found: ${data.user.name} (${data.user.id})`);
+                    
+                    // Clear cached data
+                    userProfile = null;
+                    analyticsData = null;
+                    subtopicsData = null;
+                    
+                    // Reload all data for new user
+                    await loadDashboardData();
+                } else {
+                    errorDiv.textContent = data.error || `User "${userInput}" not found. Please check the user ID or name.`;
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('❌ Error looking up user:', error);
+                errorDiv.textContent = 'Error connecting to server. Please try again.';
+                errorDiv.style.display = 'block';
+            } finally {
+                if (loadBtn) {
+                    loadBtn.disabled = false;
+                    loadBtn.textContent = 'Load';
+                }
+            }
+        }
+        
+        // Load dashboard data
+        async function loadDashboardData() {
+            if (!currentUserId) {
+                console.error('❌ Cannot load dashboard - no user ID');
+                return;
+            }
+            
+            console.log(`📊 Loading dashboard for user: ${currentUserId}`);
+            
+            try {
+                // Fetch all real data from backend
+                const [userProfileResult, userData, subtopicsResult] = await Promise.all([
+                    fetchUserProfile(),
+                    fetchUserData(),
+                    fetchSubtopicsData()
+                ]);
+                
+                if (userProfileResult.success && userData.success && subtopicsResult.success) {
+                    // Use real data from API
+                    userProfile = userProfileResult.profile;
+                    analyticsData = userData.analytics;
+                    subtopicsData = subtopicsResult.topics;
+                    
+                    console.log('✅ All data loaded successfully');
+                    
+                    // Update dashboard with real user profile data
+                    updateDashboardWithProfile(userProfile);
+                    
+                    // Display real data
+                    displayMainDashboardTopics(analyticsData.topicSummary);
+                } else {
+                    throw new Error('Failed to load some data');
+                }
+            } catch (error) {
+                console.error('❌ Error loading dashboard:', error);
+                const errorDiv = document.getElementById('user-error');
+                if (errorDiv) {
+                    errorDiv.textContent = 'Failed to load user data. Please check the user ID and try again.';
+                    errorDiv.style.display = 'block';
+                }
+            }
+        }
+        
+        // Get current user ID
+        function getCurrentUserId() {
+            return currentUserId;
+        }
+        let subtopicsData = null; // Store dynamic subtopic data
+        let userProfile = null; // Store user profile data
+
+        // Wait for Chart.js to load
+        function waitForChart() {
+            return new Promise((resolve) => {
+                if (typeof Chart !== 'undefined') {
+                    resolve();
+                } else {
+                    setTimeout(() => waitForChart().then(resolve), 100);
+                }
+            });
+        }
+
+        // Fetch user profile data from backend
+        async function fetchUserProfile() {
+            try {
+                console.log('👤 Fetching user profile...');
+                const response = await fetch(`/api/user-profile/${getCurrentUserId()}`, {
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    console.log('✅ User profile loaded:', data.profile.user_info.name);
+                    userProfile = data.profile;
+                    return data;
+                } else {
+                    throw new Error(data.error || 'Failed to fetch user profile');
+                }
+            } catch (error) {
+                console.error('❌ Error fetching user profile:', error);
+                return {
+                    success: false,
+                    error: error.message
+                };
+            }
+        }
+
+        // Fetch user data from backend
+        async function fetchUserData() {
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    },
+                    body: JSON.stringify({
+                        id: getCurrentUserId(),
+                        '_cache_bust': Date.now()  // Add cache-busting parameter
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    analyticsData = data.analytics;
+                    return data;
+                } else {
+                    throw new Error(data.error || 'Failed to fetch user data');
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                return {
+                    success: false,
+                    error: error.message
+                };
+            }
+        }
+
+        // Fetch dynamic subtopic data from backend
+        async function fetchSubtopicsData() {
+            try {
+                console.log('🔄 Fetching subtopics data...');
+                const response = await fetch(`/api/user-subtopics/${getCurrentUserId()}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    console.log('✅ Subtopics data loaded:', data.topics.length, 'topics');
+                    subtopicsData = data.topics;
+                    return data;
+                } else {
+                    throw new Error(data.error || 'Failed to fetch subtopics data');
+                }
+            } catch (error) {
+                console.error('❌ Error fetching subtopics data:', error);
+                return {
+                    success: false,
+                    error: error.message
+                };
+            }
+        }
+
+        // Get subtopics for a topic from dynamic data
+        function getSubtopicsForTopic(topicName) {
+            console.log('🔍 getSubtopicsForTopic called for:', topicName);
+            console.log('📚 subtopicsData available:', !!subtopicsData);
+            console.log('📚 subtopicsData length:', subtopicsData ? subtopicsData.length : 0);
+            
+            if (!subtopicsData) {
+                console.warn('⚠️ Subtopics data not loaded yet');
+                return [];
+            }
+            
+            const topic = subtopicsData.find(t => t.name === topicName);
+            console.log('🔍 Found topic:', !!topic);
+            const subtopics = topic ? topic.subtopics : [];
+            console.log(`📚 Found ${subtopics.length} subtopics for ${topicName}:`, subtopics.map(s => s.name));
+            return subtopics;
+        }
+
+        // Navigation function
+        function navigateToPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show target page
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                
+                // Load page-specific data
+                if (pageId === 'topic-selection') {
+                    loadTopicSelectionData();
+                }
+                
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        // Setup sidebar navigation
+        function setupSidebarNavigation() {
+            const sidebarLinks = document.querySelectorAll('.sidebar-nav-link[data-page]');
+            
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    const targetPage = link.getAttribute('data-page');
+                    
+                    // Update active state
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    
+                    // Navigate to page
+                    if (targetPage) {
+                        navigateToPage(targetPage);
+                    }
+                });
+            });
+        }
+
+        // Display main dashboard topics
+        function displayMainDashboardTopics(topics) {
+            const container = document.getElementById('main-topics-container');
+            if (!container) return;
+
+            const topicsHtml = topics.map(topic => {
+                // Get subtopics from dynamic data instead of hardcoded arrays
+                const subtopics = getSubtopicsForTopic(topic.name);
+
+                return `
+                    <div class="topic-history-card" onclick="selectTopic('${topic.name}', ${topic.avgScore})">
+                        <div class="topic-history-header">
+                            <h3 class="topic-history-name">${topic.name}</h3>
+                            <div class="topic-history-score" style="color: ${topic.avgScore >= 75 ? '#00ff88' : topic.avgScore >= 60 ? '#ff8800' : '#ff4444'};">
+                                ${topic.avgScore}%
+                            </div>
+                        </div>
+                        <div class="topic-dimensions">
+                            Intuition: ${topic.intuition}% | Memory: ${topic.memory}% | Application: ${topic.application}%
+                        </div>
+                        <div class="subtopics-history-title">Subtopics</div>
+                        <div class="subtopics-history-list">
+                            ${subtopics.map(subtopic => `
+                                <div class="subtopic-history-item" onclick="event.stopPropagation(); selectSubtopic('${topic.name}', '${subtopic.name}')">
+                                    <span class="subtopic-history-name">${subtopic.name}</span>
+                                    <span class="subtopic-history-score">${subtopic.score}%</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = topicsHtml;
+        }
+
+        // Display recent activity from user profile data
+        function displayRecentActivity(activities) {
+            const container = document.getElementById('recent-activity-timeline');
+            if (!container) return;
+
+            if (!activities || activities.length === 0) {
+                container.innerHTML = '<div class="activity-timeline-item"><div class="activity-timeline-content"><div class="activity-timeline-title">No recent activity found</div></div></div>';
+                return;
+            }
+
+            const activitiesHtml = activities.map(activity => `
+                <div class="activity-timeline-item">
+                    <div class="activity-timeline-date">${activity.date}</div>
+                    <div class="activity-timeline-content">
+                        <div class="activity-timeline-title">${activity.description}</div>
+                    </div>
+                    <div class="activity-timeline-score">${activity.score}</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = activitiesHtml;
+        }
+
+        // Update dashboard with user profile data
+        function updateDashboardWithProfile(profile) {
+            if (!profile) return;
+
+            // Update user name
+            const userNameElement = document.getElementById('user-name');
+            if (userNameElement) {
+                userNameElement.textContent = profile.user_info.name;
+            }
+
+            // Update dashboard stats
+            const stats = profile.dashboard_stats;
+            document.getElementById('total-topics').textContent = stats.concepts_mastered;
+            document.getElementById('total-concepts').textContent = stats.total_concepts;
+            document.getElementById('learning-streak').textContent = stats.learning_streak + (stats.learning_streak === 1 ? ' day' : ' days');
+            document.getElementById('overall-progress').textContent = stats.overall_progress + '%';
+            document.getElementById('gaps-detected').textContent = stats.gaps_detected;
+
+            // Display real recent activity
+            displayRecentActivity(profile.recent_activity);
+            
+            // NEW: Display action items
+            displayMainDashboardActionItems(profile.action_items);
+        }
+
+        // Display main dashboard action items
+        function displayMainDashboardActionItems(actionItems) {
+            const container = document.getElementById('main-action-items-container');
+            if (!container) return;
+
+            if (!actionItems || actionItems.length === 0) {
+                container.innerHTML = `
+                    <div class="action-item-placeholder">
+                        <div class="action-item-icon">✅</div>
+                        <div class="action-item-content">
+                            <div class="action-item-title">No urgent action items</div>
+                            <div class="action-item-subtitle">Great job! Keep up your learning momentum</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const actionItemsHtml = actionItems.map(item => {
+                const priorityClass = `priority-${item.priority}`;
+                const priorityIcon = item.priority === 'high' ? '🔥' : item.priority === 'medium' ? '⚡' : '📝';
+                
+                return `
+                    <div class="action-item-main ${priorityClass}" onclick="handleActionItemClick('${item.id}', '${item.topic}')">
+                        <div class="action-item-icon">${priorityIcon}</div>
+                        <div class="action-item-content">
+                            <div class="action-item-title">${item.description}</div>
+                            <div class="action-item-subtitle">Priority: ${item.priority.charAt(0).toUpperCase() + item.priority.slice(1)}</div>
+                            <div class="action-item-meta">
+                                <span class="action-item-topic">${item.topic}</span>
+                                <span class="action-item-time">${item.estimatedTime}</span>
+                                <span class="action-item-due">Due: ${item.dueDate}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = actionItemsHtml;
+        }
+
+        // Handle action item click for navigation
+        function handleActionItemClick(itemId, topic) {
+            console.log(`🎯 Action item clicked: ${itemId} for topic: ${topic}`);
+            
+            // Navigate to topic selection page and highlight the relevant topic
+            if (navigateToPage('topic-selection')) {
+                // Scroll to and highlight the relevant topic if it exists
+                setTimeout(() => {
+                    const topicCards = document.querySelectorAll('.topic-card');
+                    topicCards.forEach(card => {
+                        const topicName = card.querySelector('h3')?.textContent;
+                        if (topicName && topicName.includes(topic)) {
+                            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            card.style.border = '2px solid var(--accent-cyan)';
+                            card.style.boxShadow = '0 0 20px rgba(0, 255, 255, 0.3)';
+                            
+                            // Remove highlight after 3 seconds
+                            setTimeout(() => {
+                                card.style.border = '';
+                                card.style.boxShadow = '';
+                            }, 3000);
+                        }
+                    });
+                }, 500);
+            }
+        }
+
+        // Display topics for topic selection page
+        function displayTopics(topics) {
+            const container = document.getElementById('topics-container');
+            if (!container) return;
+
+            const topicsHtml = topics.map(topic => {
+                // Get subtopics from dynamic data instead of hardcoded arrays
+                const subtopics = getSubtopicsForTopic(topic.name);
+
+                return `
+                    <div class="topic-card" onclick="selectTopic('${topic.name}', ${topic.avgScore})">
+                        <div class="topic-card-header">
+                            <h3>${topic.name}</h3>
+                            <div class="topic-score" style="color: ${topic.avgScore >= 75 ? '#00ff88' : topic.avgScore >= 60 ? '#ff8800' : '#ff4444'};">
+                                ${topic.avgScore}%
+                            </div>
+                        </div>
+                        <div class="topic-dimensions">
+                            <div>Intuition: ${topic.intuition}%</div>
+                            <div>Memory: ${topic.memory}%</div>
+                            <div>Application: ${topic.application}%</div>
+                        </div>
+                        <div class="subtopics-preview">
+                            <div class="subtopics-title">Subtopics</div>
+                            <div class="subtopics-list">
+                                ${subtopics.map(subtopic => `
+                                    <span class="subtopic-tag" onclick="event.stopPropagation(); selectSubtopic('${topic.name}', '${subtopic.name}')">${subtopic.name}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = topicsHtml;
+        }
+
+        // Select topic and navigate to subtopic analytics
+        async function selectTopic(topicName, score) {
+            console.log('🎯 selectTopic called with:', topicName, score);
+            console.log('📊 analyticsData available:', !!analyticsData);
+            console.log('📊 analyticsData.topicSummary:', analyticsData?.topicSummary?.length);
+            
+            // Find topic data from analytics with chart data
+            if (analyticsData && analyticsData.topicSummary) {
+                currentTopicData = analyticsData.topicSummary.find(t => t.name === topicName);
+                console.log('🔍 Found topic data:', !!currentTopicData);
+            }
+            
+            if (!currentTopicData) {
+                console.error(`❌ Topic data not found for: ${topicName}`);
+                console.log('📋 Available topics:', analyticsData?.topicSummary?.map(t => t.name));
+                alert(`Topic data not available for ${topicName}. Please try refreshing the page.`);
+                return;
+            }
+            
+            console.log('✅ Topic data found, navigating to subtopic-analytics...');
+            
+            // Navigate to subtopic analytics
+            if (navigateToPage('subtopic-analytics')) {
+                console.log('✅ Navigation successful, updating page...');
+                
+                // Update page title
+                const subtopicTitle = document.getElementById('subtopic-title');
+                const subtopicDescription = document.getElementById('subtopic-description');
+                
+                if (subtopicTitle) {
+                    subtopicTitle.textContent = `${topicName} Analytics`;
+                }
+                if (subtopicDescription) {
+                    subtopicDescription.textContent = `Detailed performance analysis for ${topicName}`;
+                }
+                
+                // Update dimension scores
+                document.getElementById('subtopic-intuition').textContent = currentTopicData.intuition + '%';
+                document.getElementById('subtopic-memory').textContent = currentTopicData.memory + '%';
+                document.getElementById('subtopic-application').textContent = currentTopicData.application + '%';
+                
+                console.log('🤖 Loading AI feedback...');
+                // Fetch and display real AI feedback
+                await loadRealAIFeedback(topicName, currentSubtopic);
+                
+                console.log('📊 Creating charts...');
+                // Create charts with backend data
+                createSubtopicCharts(currentTopicData);
+            } else {
+                console.error('❌ Navigation to subtopic-analytics failed');
+            }
+        }
+
+        // Load real AI feedback from backend
+        async function loadRealAIFeedback(topicName, subtopicName = null) {
+            console.log('🤖 loadRealAIFeedback called for:', topicName, 'subtopic:', subtopicName);
+            
+            try {
+                console.log('📡 Making API request...');
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: getCurrentUserId(),
+                        topic: topicName,  // Always send topic name for topic-level feedback
+                        subtopic: subtopicName || null  // Send null if no specific subtopic selected
+                    })
+                });
+
+                console.log('📡 API response status:', response.status);
+                const data = await response.json();
+                console.log('📊 API response data:', data);
+                
+                if (data.success && data.aiFeedback) {
+                    const feedback = data.aiFeedback;
+                    console.log('✅ AI feedback received:', feedback);
+                    
+                    // Check if AI actually worked or if it's rule-based fallback
+                    const aiStatus = feedback.ai_powered ? 
+                        `🤖 AI Analysis (${feedback.ai_backend.toUpperCase()})${feedback.mistake_analysis ? ' with Mistake Analysis' : ''}` : 
+                        `📊 RULE-BASED ANALYSIS (AI Unavailable) - Enhanced with Mistake Pattern Detection`;
+                    
+                    // Update AI feedback summary
+                    const feedbackSummary = document.getElementById('subtopic-feedback-summary');
+                    console.log('📋 Feedback summary element:', feedbackSummary);
+                    
+                    if (feedbackSummary && feedback.summary) {
+                        console.log('✅ Updating feedback summary...');
+                        const displayName = subtopicName || topicName;
+                        feedbackSummary.innerHTML = `
+                            <h4>${aiStatus} for ${displayName}</h4>
+                            <p>${feedback.summary}</p>
+                            ${!feedback.ai_powered ? '<p class="ai-warning">⚠️ AI backend unavailable. Using comprehensive rule-based analysis with mistake pattern detection.</p>' : ''}
+                            ${feedback.mistake_analysis ? '<p class="ai-enhancement">✅ Enhanced with mistake pattern analysis from your actual wrong answers.</p>' : ''}
+                        `;
+                        console.log('✅ Feedback summary updated');
+                    } else {
+                        console.error('❌ Feedback summary element not found or no summary data');
+                    }
+                    
+                    // Update action items - ONLY show actionItems (not recommendations to avoid duplicates)
+                    const actionItemsContainer = document.getElementById('subtopic-action-items');
+                    console.log('📋 Action items container element:', actionItemsContainer);
+                    
+                    if (actionItemsContainer) {
+                        console.log('✅ Updating action items...');
+                        let allActionsHtml = '';
+                        
+                        // Only show actionItems (they are derived from recommendations, so showing both causes duplicates)
+                        if (feedback.actionItems && feedback.actionItems.length > 0) {
+                            console.log('📋 Adding action items:', feedback.actionItems.length);
+                            allActionsHtml = feedback.actionItems.map(item => {
+                                const description = typeof item === 'string' ? item : (item.description || item);
+                                const priority = item.priority || 'medium';
+                                const priorityIcon = priority === 'high' ? '🔥' : priority === 'medium' ? '⚡' : '📝';
+                                return `<div class="action-item">${priorityIcon} ${description}</div>`;
+                            }).join('');
+                        } else if (feedback.recommendations && feedback.recommendations.length > 0) {
+                            // Fallback to recommendations only if actionItems is empty
+                            console.log('💡 Using recommendations as fallback:', feedback.recommendations.length);
+                            allActionsHtml = feedback.recommendations.map(rec => 
+                                `<div class="action-item">💡 ${rec}</div>`
+                            ).join('');
+                        }
+                        
+                        actionItemsContainer.innerHTML = allActionsHtml;
+                        console.log('✅ Action items updated successfully');
+                    } else {
+                        console.error('❌ Action items container not found');
+                    }
+                } else {
+                    console.error('❌ AI feedback failed:', data);
+                    // Show clear error message if AI feedback completely fails
+                    const feedbackSummary = document.getElementById('subtopic-feedback-summary');
+                    if (feedbackSummary) {
+                        const displayName = subtopicName || topicName;
+                        feedbackSummary.innerHTML = `
+                            <h4>❌ AI Analysis Failed for ${displayName}</h4>
+                            <p class="error-message">AI feedback system is currently unavailable. Please check your connection and try again.</p>
+                            <p class="error-details">Error: ${data.error || 'Unknown error occurred'}</p>
+                        `;
+                    }
+                    
+                    // Clear action items
+                    const actionItemsContainer = document.getElementById('subtopic-action-items');
+                    if (actionItemsContainer) {
+                        actionItemsContainer.innerHTML = '<div class="action-item error-item">📋 AI action items unavailable</div>';
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Error loading AI feedback:', error);
+                // Show detailed error message
+                const feedbackSummary = document.getElementById('subtopic-feedback-summary');
+                if (feedbackSummary) {
+                    const displayName = subtopicName || topicName;
+                    feedbackSummary.innerHTML = `
+                        <h4>❌ AI System Error for ${displayName}</h4>
+                        <p class="error-message">Failed to connect to AI feedback system.</p>
+                        <p class="error-details">Technical Error: ${error.message}</p>
+                        <p class="error-suggestion">Please refresh the page or contact support if the issue persists.</p>
+                    `;
+                }
+                
+                // Clear action items
+                const actionItemsContainer = document.getElementById('subtopic-action-items');
+                if (actionItemsContainer) {
+                    actionItemsContainer.innerHTML = '<div class="action-item error-item">📋 Unable to load action items due to system error</div>';
+                }
+            }
+        }
+
+        // Select subtopic directly
+        async function selectSubtopic(topicName, subtopicName) {
+            console.log('🎯 selectSubtopic called with:', topicName, subtopicName);
+            
+            // Set current subtopic for AI feedback
+            currentSubtopic = subtopicName;
+            console.log('📋 Set currentSubtopic to:', currentSubtopic);
+            
+            // Navigate to subtopic analytics page
+            if (navigateToPage('subtopic-analytics')) {
+                console.log('✅ Navigated to subtopic-analytics page');
+                
+                // Update page title for subtopic
+                const subtopicTitle = document.getElementById('subtopic-title');
+                const subtopicDescription = document.getElementById('subtopic-description');
+                
+                if (subtopicTitle) {
+                    subtopicTitle.textContent = `${subtopicName} Analytics`;
+                }
+                if (subtopicDescription) {
+                    subtopicDescription.textContent = `Detailed performance analysis for ${subtopicName} in ${topicName}`;
+                }
+                
+                // Get subtopic-specific data from subtopicsData
+                let subtopicData = null;
+                if (subtopicsData) {
+                    const topic = subtopicsData.find(t => t.name === topicName);
+                    if (topic && topic.subtopics) {
+                        subtopicData = topic.subtopics.find(st => st.name === subtopicName);
+                    }
+                }
+                
+                console.log('🔍 Found subtopic data:', !!subtopicData);
+                if (subtopicData) {
+                    console.log('📊 Subtopic data:', subtopicData);
+                }
+                
+                // Update dimension scores with subtopic data if available, otherwise use topic data
+                const intuitionScore = subtopicData ? subtopicData.intuition : (currentTopicData ? currentTopicData.intuition : 50);
+                const memoryScore = subtopicData ? subtopicData.memory : (currentTopicData ? currentTopicData.memory : 50);
+                const applicationScore = subtopicData ? subtopicData.application : (currentTopicData ? currentTopicData.application : 50);
+                
+                document.getElementById('subtopic-intuition').textContent = intuitionScore + '%';
+                document.getElementById('subtopic-memory').textContent = memoryScore + '%';
+                document.getElementById('subtopic-application').textContent = applicationScore + '%';
+                
+                console.log('🤖 Loading topic-level AI feedback (analyzes all subtopics)...');
+                // Load topic-level AI feedback (not subtopic-specific) - analyzes all subtopics within the topic
+                await loadRealAIFeedback(topicName, null);  // Always null - we want topic-level feedback
+                
+                // Create charts with subtopic data if available
+                if (subtopicData) {
+                    createSubtopicCharts(subtopicData);
+                } else if (currentTopicData) {
+                    createSubtopicCharts(currentTopicData);
+                }
+            } else {
+                console.error('❌ Navigation to subtopic-analytics failed');
+            }
+        }
+
+        // Load subtopic-specific AI feedback from backend
+        async function loadSubtopicAIFeedback(topicName, subtopicName) {
+            console.log('🤖 loadSubtopicAIFeedback called for:', topicName, 'subtopic:', subtopicName);
+            
+            try {
+                console.log('📡 Making subtopic-specific API request...');
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: getCurrentUserId(),
+                        topic: topicName,  // Send topic name for context
+                        subtopic: subtopicName  // Send the specific subtopic name
+                    })
+                });
+
+                console.log('📡 API response status:', response.status);
+                const data = await response.json();
+                console.log('📊 API response data:', data);
+                
+                if (data.success && data.aiFeedback) {
+                    const feedback = data.aiFeedback;
+                    console.log('✅ Subtopic AI feedback received:', feedback);
+                    
+                    // Check if AI actually worked or if it's rule-based fallback
+                    const aiStatus = feedback.ai_powered ? 
+                        `🤖 AI Analysis (${feedback.ai_backend.toUpperCase()})${feedback.mistake_analysis ? ' with Mistake Analysis' : ''}` : 
+                        `📊 RULE-BASED ANALYSIS (AI Unavailable) - Enhanced with Mistake Pattern Detection`;
+                    
+                    // Update AI feedback summary
+                    const feedbackSummary = document.getElementById('subtopic-feedback-summary');
+                    console.log('📋 Feedback summary element:', feedbackSummary);
+                    
+                    if (feedbackSummary && feedback.summary) {
+                        console.log('✅ Updating subtopic feedback summary...');
+                        feedbackSummary.innerHTML = `
+                            <h4>${aiStatus} for ${subtopicName}</h4>
+                            <p><strong>Topic:</strong> ${topicName}</p>
+                            <p>${feedback.summary}</p>
+                            ${!feedback.ai_powered ? '<p class="ai-warning">⚠️ AI backend unavailable. Using comprehensive rule-based analysis with mistake pattern detection.</p>' : ''}
+                            ${feedback.mistake_analysis ? '<p class="ai-enhancement">✅ Enhanced with mistake pattern analysis from your actual wrong answers.</p>' : ''}
+                        `;
+                        console.log('✅ Subtopic feedback summary updated');
+                    } else {
+                        console.error('❌ Feedback summary element not found or no summary data');
+                    }
+                    
+                    // Update action items - ONLY show actionItems (not recommendations to avoid duplicates)
+                    const actionItemsContainer = document.getElementById('subtopic-action-items');
+                    console.log('📋 Action items container element:', actionItemsContainer);
+                    
+                    if (actionItemsContainer) {
+                        console.log('✅ Updating subtopic action items...');
+                        let allActionsHtml = '';
+                        
+                        // Only show actionItems (they are derived from recommendations, so showing both causes duplicates)
+                        if (feedback.actionItems && feedback.actionItems.length > 0) {
+                            console.log('📋 Adding subtopic action items:', feedback.actionItems.length);
+                            allActionsHtml = feedback.actionItems.map(item => {
+                                const description = typeof item === 'string' ? item : (item.description || item);
+                                const priority = item.priority || 'medium';
+                                const priorityIcon = priority === 'high' ? '🔥' : priority === 'medium' ? '⚡' : '📝';
+                                return `<div class="action-item">${priorityIcon} ${description}</div>`;
+                            }).join('');
+                        } else if (feedback.recommendations && feedback.recommendations.length > 0) {
+                            // Fallback to recommendations only if actionItems is empty
+                            console.log('💡 Using recommendations as fallback:', feedback.recommendations.length);
+                            allActionsHtml = feedback.recommendations.map(rec => 
+                                `<div class="action-item">💡 ${rec}</div>`
+                            ).join('');
+                        }
+                        
+                        actionItemsContainer.innerHTML = allActionsHtml;
+                        console.log('✅ Subtopic action items updated successfully');
+                    } else {
+                        console.error('❌ Action items container not found');
+                    }
+                } else {
+                    console.error('❌ Subtopic AI feedback failed:', data);
+                    // Show clear error message if AI feedback completely fails
+                    const feedbackSummary = document.getElementById('subtopic-feedback-summary');
+                    if (feedbackSummary) {
+                        feedbackSummary.innerHTML = `
+                            <h4>❌ AI Analysis Failed for ${subtopicName}</h4>
+                            <p class="error-message">AI feedback system is currently unavailable. Please check your connection and try again.</p>
+                            <p class="error-details">Error: ${data.error || 'Unknown error occurred'}</p>
+                        `;
+                    }
+                    
+                    // Clear action items
+                    const actionItemsContainer = document.getElementById('subtopic-action-items');
+                    if (actionItemsContainer) {
+                        actionItemsContainer.innerHTML = '<div class="action-item error-item">📋 AI action items unavailable</div>';
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Error loading subtopic AI feedback:', error);
+                // Show detailed error message
+                const feedbackSummary = document.getElementById('subtopic-feedback-summary');
+                if (feedbackSummary) {
+                    feedbackSummary.innerHTML = `
+                        <h4>❌ AI System Error for ${subtopicName}</h4>
+                        <p class="error-message">Failed to connect to AI feedback system.</p>
+                        <p class="error-details">Technical Error: ${error.message}</p>
+                        <p class="error-suggestion">Please refresh the page or contact support if the issue persists.</p>
+                    `;
+                }
+                
+                // Clear action items
+                const actionItemsContainer = document.getElementById('subtopic-action-items');
+                if (actionItemsContainer) {
+                    actionItemsContainer.innerHTML = '<div class="action-item error-item">📋 Unable to load action items due to system error</div>';
+                }
+            }
+        }
+
+        // Load topic selection data
+        async function loadTopicSelectionData() {
+            if (!analyticsData) {
+                const data = await fetchUserData();
+                if (data.success) {
+                    analyticsData = data.analytics;
+                }
+            }
+
+            // Ensure subtopics data is loaded
+            if (!subtopicsData) {
+                const subtopicsResult = await fetchSubtopicsData();
+                if (subtopicsResult.success) {
+                    subtopicsData = subtopicsResult.topics;
+                }
+            }
+
+            if (analyticsData) {
+                // Update overall stats from real data
+                document.getElementById('overall-intuition').textContent = analyticsData.overallAvg.intuition + '%';
+                document.getElementById('overall-memory').textContent = analyticsData.overallAvg.memory + '%';
+                document.getElementById('overall-application').textContent = analyticsData.overallAvg.application + '%';
+                document.getElementById('total-assessments').textContent = analyticsData.totalAssessments;
+                
+                // Update progress bars
+                setTimeout(() => {
+                    document.getElementById('overall-intuition-progress').style.width = analyticsData.overallAvg.intuition + '%';
+                    document.getElementById('overall-memory-progress').style.width = analyticsData.overallAvg.memory + '%';
+                    document.getElementById('overall-application-progress').style.width = analyticsData.overallAvg.application + '%';
+                }, 300);
+                
+                // Display topics from real data
+                displayTopics(analyticsData.topicSummary);
+                
+                // Create charts with real data
+                await createTopicSelectionCharts();
+            }
+        }
+
+        // Create charts for topic selection page
+        async function createTopicSelectionCharts() {
+            await waitForChart();
+            
+            // Use real data from backend - NO hardcoded data
+            const dailyData = analyticsData?.dailyQuestions || [];
+            const improvementData = analyticsData?.overallImprovementTrend || [];
+            
+            // Daily questions chart - using backend data only
+            const dailyCanvas = document.getElementById('daily-questions-chart');
+            if (dailyCanvas) {
+                if (charts.dailyQuestions) charts.dailyQuestions.destroy();
+                
+                if (dailyData.length > 0) {
+                    const ctx = dailyCanvas.getContext('2d');
+                    charts.dailyQuestions = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: dailyData.map(d => d.dayName),
+                            datasets: [{
+                                label: 'Questions Answered',
+                                data: dailyData.map(d => d.questionCount),
+                                backgroundColor: 'rgba(0, 255, 255, 0.7)',
+                                borderColor: '#00ffff',
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { labels: { color: '#ffffff' } }
+                            },
+                            scales: {
+                                x: { ticks: { color: '#ffffff' }, grid: { color: 'rgba(255, 255, 255, 0.3)' } },
+                                y: { ticks: { color: '#ffffff' }, grid: { color: 'rgba(255, 255, 255, 0.3)' } }
+                            }
+                        }
+                    });
+                } else {
+                    // Show "No Data" message instead of empty chart
+                    dailyCanvas.parentElement.innerHTML = '<div class="no-data-message">📊 No daily question data available yet. Complete some assessments to see your activity patterns.</div>';
+                }
+            }
+            
+            // Improvement trends chart - using backend data only
+            const improvementCanvas = document.getElementById('improvement-trends-chart');
+            if (improvementCanvas) {
+                if (charts.improvement) charts.improvement.destroy();
+                
+                if (improvementData.length > 0) {
+                    const ctx = improvementCanvas.getContext('2d');
+                    charts.improvement = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: improvementData.map(d => d.week),
+                            datasets: [{
+                                label: 'Overall Score',
+                                data: improvementData.map(d => d.score),
+                                borderColor: '#ff00ff',
+                                backgroundColor: 'rgba(255, 0, 255, 0.2)',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.3
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { labels: { color: '#ffffff' } }
+                            },
+                            scales: {
+                                x: { ticks: { color: '#ffffff' }, grid: { color: 'rgba(255, 255, 255, 0.3)' } },
+                                y: {
+                                    min: 0, max: 100,
+                                    ticks: { 
+                                        color: '#ffffff',
+                                        callback: function(value) { return value + '%'; }
+                                    },
+                                    grid: { color: 'rgba(255, 255, 255, 0.3)' }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    // Show "No Data" message instead of empty chart
+                    improvementCanvas.parentElement.innerHTML = '<div class="no-data-message">📈 No improvement trend data available yet. Complete assessments over multiple weeks to see your progress trends.</div>';
+                }
+            }
+        }
+
+        // Fetch subtopic improvement data with actual attempts
+        async function fetchSubtopicImprovementData(topicName, subtopicName) {
+            try {
+                const response = await fetch(`/api/subtopic-improvement/${getCurrentUserId()}/${encodeURIComponent(topicName)}/${encodeURIComponent(subtopicName)}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    return data.improvement_data;
+                } else {
+                    console.warn(`No improvement data found for ${topicName} - ${subtopicName}`);
+                    return [];
+                }
+            } catch (error) {
+                console.error('Error fetching subtopic improvement data:', error);
+                return [];
+            }
+        }
+
+        // Fetch subtopic accuracy trend data with actual attempts
+        async function fetchSubtopicAccuracyData(topicName, subtopicName) {
+            try {
+                const response = await fetch(`/api/subtopic-accuracy/${getCurrentUserId()}/${encodeURIComponent(topicName)}/${encodeURIComponent(subtopicName)}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    return data.accuracy_data;
+                } else {
+                    console.warn(`No accuracy data found for ${topicName} - ${subtopicName}`);
+                    return [];
+                }
+            } catch (error) {
+                console.error('Error fetching subtopic accuracy data:', error);
+                return [];
+            }
+        }
+
+        // Create subtopic charts with real attempt data
+        async function createSubtopicCharts(topicData) {
+            await waitForChart();
+            
+            // Get chart data from backend - NO hardcoded data
+            const chartData = topicData.chartData || {};
+            
+            // NEW: Fetch real subtopic accuracy and improvement data for the current topic
+            // For now, we'll use the first subtopic as an example, but this should be dynamic
+            const subtopics = getSubtopicsForTopic(topicData.name);
+            let improvementProgressData = [];
+            let accuracyTrendData = [];
+            
+            if (subtopics && subtopics.length > 0) {
+                // Use the first subtopic for demonstration - in a real app, this would be user-selected
+                const firstSubtopic = subtopics[0];
+                
+                // Fetch both improvement and accuracy data from the new endpoints
+                [improvementProgressData, accuracyTrendData] = await Promise.all([
+                    fetchSubtopicImprovementData(topicData.name, firstSubtopic.name),
+                    fetchSubtopicAccuracyData(topicData.name, firstSubtopic.name)
+                ]);
+                
+                console.log(`📊 Loaded ${improvementProgressData.length} improvement attempts and ${accuracyTrendData.length} accuracy attempts for ${topicData.name} - ${firstSubtopic.name}`);
+            }
+            
+            // Fallback to topic-level data if no subtopic data available
+            if (improvementProgressData.length === 0) {
+                improvementProgressData = chartData.improvementProgress || [];
+            }
+            if (accuracyTrendData.length === 0) {
+                accuracyTrendData = chartData.accuracyTrend || [];
+            }
+            
+            // Dimensions radar chart
+            const dimensionsCanvas = document.getElementById('dimensions-chart');
+            if (dimensionsCanvas) {
+                if (charts.dimensions) charts.dimensions.destroy();
+                
+                const ctx = dimensionsCanvas.getContext('2d');
+                charts.dimensions = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Intuition', 'Memory', 'Application'],
+                        datasets: [{
+                            label: topicData.name + ' Performance',
+                            data: [topicData.intuition, topicData.memory, topicData.application],
+                            backgroundColor: 'rgba(0, 255, 255, 0.2)',
+                            borderColor: '#00ffff',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#00ffff',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: '#ffffff' } }
+                        },
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: { 
+                                    color: '#ffffff',
+                                    callback: function(value) { return value + '%'; }
+                                },
+                                grid: { color: 'rgba(255, 255, 255, 0.3)' },
+                                angleLines: { color: 'rgba(255, 255, 255, 0.3)' },
+                                pointLabels: { color: '#00ffff', font: { size: 14 } }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Accuracy trends chart - using NEW REAL SUBTOPIC DATA from database
+            const accuracyCanvas = document.getElementById('accuracy-chart');
+            if (accuracyCanvas) {
+                if (charts.accuracy) charts.accuracy.destroy();
+                
+                if (accuracyTrendData.length > 0) {
+                    const ctx = accuracyCanvas.getContext('2d');
+                    charts.accuracy = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: accuracyTrendData.map(d => d.attempt), // Now shows "Attempt 1", "Attempt 2", etc.
+                            datasets: [{
+                                label: topicData.name + ' Accuracy Across Attempts',
+                                data: accuracyTrendData.map(d => d.score),
+                                borderColor: '#ff00ff',
+                                backgroundColor: 'rgba(255, 0, 255, 0.1)',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.4,
+                                pointBackgroundColor: '#ff00ff',
+                                pointBorderColor: '#ffffff',
+                                pointBorderWidth: 2,
+                                pointRadius: 6
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { 
+                                    labels: { 
+                                        color: '#ffffff',
+                                        font: {
+                                            size: 14,
+                                            weight: 'bold'
+                                        }
+                                    } 
+                                },
+                                title: {
+                                    display: true,
+                                    text: `${topicData.name} - Accuracy Across ${accuracyTrendData.length} Assessment Attempts`,
+                                    color: '#ffffff',
+                                    font: {
+                                        size: 18,
+                                        weight: 'bold'
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: { 
+                                    ticks: { color: '#ffffff' }, 
+                                    grid: { color: 'rgba(255, 255, 255, 0.3)' },
+                                    title: {
+                                        display: true,
+                                        text: 'Assessment Attempts',
+                                        color: '#ffffff'
+                                    }
+                                },
+                                y: {
+                                    min: 0, max: 100,
+                                    ticks: { 
+                                        color: '#ffffff',
+                                        callback: function(value) { return value + '%'; }
+                                    },
+                                    grid: { color: 'rgba(255, 255, 255, 0.3)' },
+                                    title: {
+                                        display: true,
+                                        text: 'Accuracy (%)',
+                                        color: '#ffffff'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    // Show "No Data" message instead of empty chart
+                    accuracyCanvas.parentElement.innerHTML = '<div class="no-data-message">📈 No accuracy trend data available for ' + topicData.name + '. Complete more assessments in this topic to see trends.</div>';
+                }
+            }
+            
+            // Improvement progress chart - using REAL ATTEMPT DATA from database
+            const improvementCanvas = document.getElementById('improvement-chart');
+            if (improvementCanvas) {
+                if (charts.improvementProgress) charts.improvementProgress.destroy();
+                
+                if (improvementProgressData.length > 0) {
+                    const ctx = improvementCanvas.getContext('2d');
+                    
+                    // Check if we have real attempt data (with breakdown) or just topic-level data
+                    const hasAttemptData = improvementProgressData[0] && improvementProgressData[0].breakdown;
+                    
+                    if (hasAttemptData) {
+                        // Create multi-dataset chart showing dimension breakdown per attempt
+                        charts.improvementProgress = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: improvementProgressData.map(d => d.attempt),
+                                datasets: [
+                                    {
+                                        label: 'Overall Score',
+                                        data: improvementProgressData.map(d => d.score),
+                                        borderColor: '#00ff88',
+                                        backgroundColor: 'rgba(0, 255, 136, 0.2)',
+                                        borderWidth: 3,
+                                        fill: false,
+                                        tension: 0.3
+                                    },
+                                    {
+                                        label: 'Intuition',
+                                        data: improvementProgressData.map(d => d.breakdown.intuition),
+                                        borderColor: '#00ffff',
+                                        backgroundColor: 'rgba(0, 255, 255, 0.1)',
+                                        borderWidth: 2,
+                                        fill: false,
+                                        tension: 0.3
+                                    },
+                                    {
+                                        label: 'Memory',
+                                        data: improvementProgressData.map(d => d.breakdown.memory),
+                                        borderColor: '#ff00ff',
+                                        backgroundColor: 'rgba(255, 0, 255, 0.1)',
+                                        borderWidth: 2,
+                                        fill: false,
+                                        tension: 0.3
+                                    },
+                                    {
+                                        label: 'Application',
+                                        data: improvementProgressData.map(d => d.breakdown.application),
+                                        borderColor: '#ffff00',
+                                        backgroundColor: 'rgba(255, 255, 0, 0.1)',
+                                        borderWidth: 2,
+                                        fill: false,
+                                        tension: 0.3
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { 
+                                        labels: { 
+                                            color: '#ffffff',
+                                            font: {
+                                                size: 14,
+                                                weight: 'bold'
+                                            }
+                                        } 
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: `${topicData.name} - Progress Across ${improvementProgressData.length} Assessment Attempts`,
+                                        color: '#ffffff',
+                                        font: {
+                                            size: 18,
+                                            weight: 'bold'
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    x: { 
+                                        ticks: { color: '#ffffff' }, 
+                                        grid: { color: 'rgba(255, 255, 255, 0.3)' },
+                                        title: {
+                                            display: true,
+                                            text: 'Assessment Attempts',
+                                            color: '#ffffff'
+                                        }
+                                    },
+                                    y: {
+                                        min: 0, max: 100,
+                                        ticks: { 
+                                            color: '#ffffff',
+                                            callback: function(value) { return value + '%'; }
+                                        },
+                                        grid: { color: 'rgba(255, 255, 255, 0.3)' },
+                                        title: {
+                                            display: true,
+                                            text: 'Score (%)',
+                                            color: '#ffffff'
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        // Fallback to simple bar chart for topic-level data
+                        charts.improvementProgress = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: improvementProgressData.map(d => d.attempt),
+                                datasets: [{
+                                    label: topicData.name + ' Progress',
+                                    data: improvementProgressData.map(d => d.score),
+                                    backgroundColor: 'rgba(0, 255, 136, 0.3)',
+                                    borderColor: '#00ff88',
+                                    borderWidth: 2
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { labels: { color: '#ffffff' } }
+                                },
+                                scales: {
+                                    x: { ticks: { color: '#ffffff' }, grid: { color: 'rgba(255, 255, 255, 0.3)' } },
+                                    y: {
+                                        min: 0, max: 100,
+                                        ticks: { 
+                                            color: '#ffffff',
+                                            callback: function(value) { return value + '%'; }
+                                        },
+                                        grid: { color: 'rgba(255, 255, 255, 0.3)' }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    // Show "No Data" message instead of empty chart
+                    improvementCanvas.parentElement.innerHTML = '<div class="no-data-message">🚀 No improvement progress data available for ' + topicData.name + '. Complete multiple assessments in this topic to track your progress across attempts.</div>';
+                }
+            }
+        }
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Setup sidebar navigation
+            setupSidebarNavigation();
+            
+            console.log('🚀 Application initialized - enter user ID or name to load data');
+            document.getElementById('user-name').textContent = 'Enter User ID or Name';
+            
+            // Check for user ID in URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const userIdFromUrl = urlParams.get('user_id') || urlParams.get('userId') || urlParams.get('user');
+            
+            if (userIdFromUrl) {
+                // Auto-load user from URL parameter
+                document.getElementById('user-input').value = userIdFromUrl;
+                await loadUserByInput();
+            }
+            
+            // Setup back navigation buttons
+            const backToMainBtn = document.getElementById('back-to-main');
+            if (backToMainBtn) {
+                backToMainBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // Update sidebar active state
+                    document.querySelectorAll('.sidebar-nav-link').forEach(l => l.classList.remove('active'));
+                    document.querySelector('.sidebar-nav-link[data-page="main-dashboard"]').classList.add('active');
+                    
+                    navigateToPage('main-dashboard');
+                });
+            }
+            
+            const backToTopicsBtn = document.getElementById('back-to-topics');
+            if (backToTopicsBtn) {
+                backToTopicsBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // Update sidebar active state
+                    document.querySelectorAll('.sidebar-nav-link').forEach(l => l.classList.remove('active'));
+                    document.querySelector('.sidebar-nav-link[data-page="topic-selection"]').classList.add('active');
+                    
+                    navigateToPage('topic-selection');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
