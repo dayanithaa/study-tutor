@@ -73,8 +73,9 @@ Process to run the Application
 
 6 Run Application: python app.py
 
+
+7 Open Browser: http://localhost:5000
 ## FUTURE IMPROVEMENTS:
 Integration
 
 
-7 Open Browser: http://localhost:5000
